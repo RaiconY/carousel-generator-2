@@ -18,10 +18,33 @@ type HtmlToPdfOptions = {
   jsPDF: jsPDFOptions;
 };
 
+export type ExportFormat = "pdf" | "png";
+
+const SCALE_TO_LINKEDIN_INTRINSIC_SIZE = 1.8;
+
 // Convert units to px using the conversion value 'k' from jsPDF.
 export const toPx = function toPx(val: number, k: number) {
   return Math.floor(((val * k) / 72) * 96);
 };
+
+function ensureFileExtension(filename: string, extension: string) {
+  const normalizedExtension = extension.startsWith(".")
+    ? extension
+    : `.${extension}`;
+
+  return filename.toLowerCase().endsWith(normalizedExtension.toLowerCase())
+    ? filename
+    : `${filename}${normalizedExtension}`;
+}
+
+function triggerDownload(dataUrl: string, filename: string) {
+  const link = document.createElement("a");
+  link.download = filename;
+  link.href = dataUrl;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}
 
 function getPdfPageSize(opt: HtmlToPdfOptions) {
   // Retrieve page-size based on jsPDF settings, if not explicitly provided.
@@ -107,8 +130,11 @@ export function useComponentPrinter() {
   const { watch }: DocumentFormReturn = useFormContext();
 
   const [isPrinting, setIsPrinting] = React.useState(false);
+  const [activeExportFormat, setActiveExportFormat] =
+    React.useState<ExportFormat | null>(null);
   // TODO: Show animation on loading
   const componentRef = React.useRef(null);
+  const exportFormatRef = React.useRef<ExportFormat>("pdf");
 
   // Packages and references
   // react-to-print: https://github.com/gregnb/react-to-print
@@ -142,30 +168,26 @@ export function useComponentPrinter() {
     return componentRef.current;
   }, []);
 
-  const handlePrint = useReactToPrint({
+  const triggerExport = useReactToPrint({
     content: reactToPrintContent,
     removeAfterPrint: true,
-    onBeforePrint: () => setIsPrinting(true),
-    onAfterPrint: () => setIsPrinting(false),
-    pageStyle: `@page { size: ${SIZE.width}px ${SIZE.height}px;  margin: 0; } @media print { body { -webkit-print-color-adjust: exact; }}`,
+    pageStyle: `@page { size: ${SIZE.width}px ${SIZE.height}px;  margin: 0; } @media print { body { -webkit-print-color-adjust: exact; } }`,
     print: async (printIframe) => {
       const contentDocument = printIframe.contentDocument;
       if (!contentDocument) {
-        console.error("iFrame does not have a document content");
-        return;
+        throw new Error("iFrame does not have a document content");
       }
 
       const html = contentDocument.getElementById("element-to-download-as-pdf");
       if (!html) {
-        console.error("Couldn't find element to convert to PDF");
-        return;
+        throw new Error("Couldn't find element to convert to PDF");
       }
 
-      const SCALE_TO_LINKEDIN_INTRINSIC_SIZE = 1.8;
-      // const fontEmbedCss = await getFontEmbedCSS(html);
+      const format = exportFormatRef.current;
+      const filename = watch("filename")?.trim() || "carousel";
       const options: HtmlToPdfOptions = {
         margin: [0, 0, 0, 0],
-        filename: watch("filename"),
+        filename,
         image: { type: "webp", quality: 0.98 },
         htmlToImage: {
           height: SIZE.height * numPages,
@@ -177,25 +199,72 @@ export function useComponentPrinter() {
         jsPDF: { unit: "px", format: [SIZE.width, SIZE.height] },
       };
 
-      // TODO Create buttons to download as png / svg / etc from 'html-to-image'
-      const canvas = await toCanvas(html, options.htmlToImage).catch((err) => {
-        console.error(err);
-      });
+      let canvas: HTMLCanvasElement;
+
+      try {
+        canvas = await toCanvas(html, options.htmlToImage);
+      } catch (error) {
+        console.error("Failed to render canvas for export", error);
+        throw error;
+      }
+
       if (!canvas) {
-        console.error("Failed to create canvas");
+        throw new Error("Failed to create canvas");
+      }
+
+      if (format === "png") {
+        const pngDataUrl = canvas.toDataURL("image/png");
+        triggerDownload(
+          pngDataUrl,
+          ensureFileExtension(options.filename, ".png")
+        );
         return;
       }
-      // DEBUG:
-      // document.body.appendChild(canvas);
+
       const pdf = canvasToPdf(canvas, options);
-      pdf.save(options.filename);
+      pdf.save(ensureFileExtension(options.filename, ".pdf"));
+
     },
   });
 
+  const runExport = React.useCallback(
+    async (format: ExportFormat) => {
+      exportFormatRef.current = format;
+      setActiveExportFormat(format);
+      setIsPrinting(true);
+
+      try {
+        if (!triggerExport) {
+          throw new Error("Export handler is not ready");
+        }
+
+        await triggerExport();
+      } finally {
+        setIsPrinting(false);
+        setActiveExportFormat(null);
+      }
+    },
+    [triggerExport]
+  );
+
+  const handleDownloadPdf = React.useCallback(() => {
+    runExport("pdf").catch((error) => {
+      console.error("Failed to export carousel as PDF", error);
+    });
+  }, [runExport]);
+
+  const handleDownloadPng = React.useCallback(() => {
+    runExport("png").catch((error) => {
+      console.error("Failed to export carousel as PNG", error);
+    });
+  }, [runExport]);
+
   return {
     componentRef,
-    handlePrint,
+    handleDownloadPdf,
+    handleDownloadPng,
     isPrinting,
+    activeExportFormat,
   };
 }
 
