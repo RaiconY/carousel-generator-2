@@ -11,7 +11,7 @@ export function AIPanel() {
   return (
     <div className="flex flex-col gap-2 w-full items-center">
       <TypographyH3 className="flex flex-row items-center gap-2">
-        <Sparkles className="w-6 h-6" /> Generate with AI
+        <Sparkles className="w-6 h-6" /> Generate with AI (фича в прогрессе)
       </TypographyH3>
       {apiKey ? (
         <>
