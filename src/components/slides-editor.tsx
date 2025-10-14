@@ -12,12 +12,6 @@ import { useFieldArrayValues } from "@/lib/hooks/use-field-array-values";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useSelectionContext } from "@/lib/providers/selection-context";
-import { AIInputForm } from "@/components/ai-input-form";
-import { AITextAreaForm } from "@/components/ai-textarea-form";
-import { useKeys } from "@/lib/hooks/use-keys";
-import { NoApiKeysText } from "./no-api-keys-text";
-import { useKeysContext } from "@/lib/providers/keys-context";
-import { AIPanel } from "@/components/ai-panel";
 import { useEffect, useState } from "react";
 import { useStatusContext } from "@/lib/providers/editor-status-context";
 import { DocumentSkeleton } from "@/components/editor-skeleton";
@@ -93,7 +87,6 @@ export function SlidesEditor({}: SlidesEditorProps) {
             </Button>
           </div> */}
         </div>
-        <AIPanel />
       </div>
     </div>
   );

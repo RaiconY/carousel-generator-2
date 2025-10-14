@@ -55,5 +55,10 @@ export const fontsMap: FontMap = {
 };
 
 export function fontIdToClassName(fontId: string) {
-  return fontsMap[fontId].className;
+  const font = fontsMap[fontId];
+  if (!font) {
+    console.warn(`Font "${fontId}" not found in fontsMap, using default`);
+    return fontsMap.DM_Sans.className;
+  }
+  return font.className;
 }

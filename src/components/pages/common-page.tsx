@@ -23,6 +23,7 @@ import { ElementType } from "@/lib/validation/element-type";
 import { ContentImage } from "@/components/elements/content-image";
 import ElementMenubarWrapper from "@/components/element-menubar-wrapper";
 import { useElementSize } from "usehooks-ts";
+import { overlayPatterns } from "@/lib/background-patterns";
 
 export function CommonPage({
   index,
@@ -65,9 +66,18 @@ export function CommonPage({
     ? size.height - FRAME_PADDING * 2 - footerDimensions.height - elementsHeight
     : 0;
 
+  // Получаем SVG паттерн для overlay
+  const overlayPatternSvg = config.theme.overlayPattern
+    ? overlayPatterns[config.theme.overlayPattern as keyof typeof overlayPatterns]?.svg
+    : undefined;
+
   return (
     <PageBase size={size} fieldName={backgroundImageField}>
-      <BackgroundLayer background={config.theme.background} className="-z-20" />
+      <BackgroundLayer
+        background={config.theme.background}
+        pattern={overlayPatternSvg}
+        className="-z-20"
+      />
       {slide.backgroundImage?.source.src ? (
         <BackgroundImageLayer image={slide.backgroundImage} className="-z-10" />
       ) : null}

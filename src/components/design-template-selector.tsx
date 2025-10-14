@@ -21,10 +21,12 @@ export function DesignTemplateSelector() {
     setValue("config.theme.primary", template.primaryColor);
     setValue("config.theme.secondary", template.secondaryColor);
     setValue("config.theme.isCustom", true);
+    setValue("config.theme.backgroundPattern", template.backgroundPattern);
+    setValue("config.theme.overlayPattern", template.overlayPattern);
 
-    // Можно также применить шрифты, если они доступны
-    // setValue("config.fonts.font1", template.font1);
-    // setValue("config.fonts.font2", template.font2);
+    // Применяем шрифты из шаблона
+    setValue("config.fonts.font1", template.font1);
+    setValue("config.fonts.font2", template.font2);
   };
 
   return (
