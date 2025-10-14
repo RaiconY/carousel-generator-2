@@ -16,7 +16,7 @@ import { usePagerContext } from "@/lib/providers/pager-context";
 import { Separator } from "@/components/ui/separator";
 import { FontsForm } from "@/components/forms/fonts-form";
 import { PageNumberForm } from "./forms/page-number-form";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
   Briefcase,
   Brush,
@@ -32,7 +32,6 @@ import { Drawer } from "vaul";
 import { DrawerContent, DrawerTrigger } from "@/components/drawer";
 import { ReactNode, useEffect, useState } from "react";
 import { buttonVariants } from "./ui/button";
-import { ScrollBar } from "./ui/scroll-area";
 import { useSelectionContext } from "@/lib/providers/selection-context";
 import { useFieldsFileImporter } from "@/lib/hooks/use-fields-file-importer";
 import { set } from "zod";
@@ -172,20 +171,21 @@ export function SidebarTabsPanel() {
             <VerticalTabTriggerButton tabInfo={ALL_FORMS.pageNumber} />
           </VerticalTabsList>
         </ScrollArea>
-        <div className="p-2 flex flex-col items-stretch w-full ">
-          {/* //TODO: Share this area with stylemenu */}
-          {currentSelection ? (
-            <StyleMenu form={form} className={"m-4"} />
-          ) : // TODO: Create consistent styles between tabs and StyleMenu
-          null}
-          <VerticalTabsContent
-            value={ALL_FORMS.design.value}
-            className="mt-0 border-0 p-0 m-4"
-          >
-            <h4 className="text-xl font-semibold">{ALL_FORMS.design.name}</h4>
-            <Separator className="mt-2 mb-4"></Separator>
-            <DesignTemplateSelector />
-          </VerticalTabsContent>
+        <ScrollArea className="h-full w-full">
+          <div className="p-2 flex flex-col items-stretch w-full h-full">
+            {/* //TODO: Share this area with stylemenu */}
+            {currentSelection ? (
+              <StyleMenu form={form} className={"m-4"} />
+            ) : // TODO: Create consistent styles between tabs and StyleMenu
+            null}
+            <VerticalTabsContent
+              value={ALL_FORMS.design.value}
+              className="mt-0 border-0 p-0 m-4 overflow-y-auto"
+            >
+              <h4 className="text-xl font-semibold">{ALL_FORMS.design.name}</h4>
+              <Separator className="mt-2 mb-4"></Separator>
+              <DesignTemplateSelector />
+            </VerticalTabsContent>
           <VerticalTabsContent
             value={ALL_FORMS.brand.value}
             className="mt-0 border-0 p-0 m-4"
@@ -220,7 +220,9 @@ export function SidebarTabsPanel() {
             <Separator className="mt-2 mb-4"></Separator>
             <PageNumberForm />
           </VerticalTabsContent>
-        </div>
+          </div>
+          <ScrollBar orientation="vertical" />
+        </ScrollArea>
       </div>
     </VerticalTabs>
   );
