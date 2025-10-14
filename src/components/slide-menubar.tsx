@@ -10,6 +10,8 @@ import {
   Trash,
   ChevronLeft,
   ChevronRight,
+  Download,
+  Clipboard,
 } from "lucide-react";
 import {
   DocumentFormReturn,
@@ -18,6 +20,9 @@ import {
 import { useFieldArrayValues } from "@/lib/hooks/use-field-array-values";
 import { cn } from "@/lib/utils";
 import { getSlideNumber } from "@/lib/field-path";
+import { exportSlideToPng, copySlideToPng } from "@/lib/export-slide-png";
+import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function SlideMenubar({
   slidesFieldArray,
@@ -34,6 +39,72 @@ export default function SlideMenubar({
   const currentSlidesValues = watch("slides");
   const currentPage = getSlideNumber(fieldName);
   const { remove, swap, insert } = slidesFieldArray;
+  const [isExporting, setIsExporting] = useState(false);
+  const { toast } = useToast();
+
+  const handleDownloadPng = async () => {
+    setIsExporting(true);
+    try {
+      // Find the slide element by its carousel item ID
+      const carouselItem = document.getElementById(`carousel-item-${currentPage}`);
+      if (!carouselItem) {
+        throw new Error("Slide element not found");
+      }
+
+      // Find the actual slide content (PageBase element)
+      const slideElement = carouselItem.querySelector('[id^="page-base-"]') as HTMLElement;
+      if (!slideElement) {
+        throw new Error("Slide content not found");
+      }
+
+      await exportSlideToPng(currentPage, slideElement);
+      toast({
+        title: "Success",
+        description: `Slide ${currentPage + 1} exported successfully`,
+      });
+    } catch (error) {
+      console.error("Export failed:", error);
+      toast({
+        title: "Error",
+        description: "Failed to export slide",
+        variant: "destructive",
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleCopyPng = async () => {
+    setIsExporting(true);
+    try {
+      // Find the slide element by its carousel item ID
+      const carouselItem = document.getElementById(`carousel-item-${currentPage}`);
+      if (!carouselItem) {
+        throw new Error("Slide element not found");
+      }
+
+      // Find the actual slide content (PageBase element)
+      const slideElement = carouselItem.querySelector('[id^="page-base-"]') as HTMLElement;
+      if (!slideElement) {
+        throw new Error("Slide content not found");
+      }
+
+      await copySlideToPng(slideElement);
+      toast({
+        title: "Success",
+        description: "Slide copied to clipboard",
+      });
+    } catch (error) {
+      console.error("Copy failed:", error);
+      toast({
+        title: "Error",
+        description: "Failed to copy slide. Clipboard API may not be supported in your browser.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   return (
     <div
@@ -105,6 +176,27 @@ export default function SlideMenubar({
         disabled={currentPage >= numPages - 1}
       >
         <ChevronRight className="w-4 h-4" />
+      </Button>
+      <div className="w-px h-8 bg-border mx-1" />
+      <Button
+        onClick={handleCopyPng}
+        variant="ghost"
+        className="w-8 h-8"
+        size="icon"
+        disabled={isExporting || (currentPage == 0 && numPages == 0)}
+        title="Copy slide as PNG"
+      >
+        <Clipboard className="w-4 h-4" />
+      </Button>
+      <Button
+        onClick={handleDownloadPng}
+        variant="ghost"
+        className="w-8 h-8"
+        size="icon"
+        disabled={isExporting || (currentPage == 0 && numPages == 0)}
+        title="Download slide as PNG"
+      >
+        <Download className="w-4 h-4" />
       </Button>
     </div>
   );
