@@ -1,5 +1,28 @@
 import { toPng } from "html-to-image";
 
+/**
+ * Filter function to exclude elements that should not be exported
+ * Excludes: add element buttons, hover effects, dialogs, etc.
+ */
+function shouldExportNode(node: HTMLElement): boolean {
+  // Exclude add element buttons
+  if (node.id && node.id.startsWith("add-element-")) {
+    return false;
+  }
+
+  // Exclude any dialogs or popovers that might be open
+  if (node.getAttribute("role") === "dialog") {
+    return false;
+  }
+
+  // Exclude buttons with dashed borders (add buttons)
+  if (node.classList && node.classList.contains("border-dashed")) {
+    return false;
+  }
+
+  return true;
+}
+
 export async function exportSlideToPng(
   slideIndex: number,
   slideElement: HTMLElement
@@ -9,6 +32,7 @@ export async function exportSlideToPng(
     const dataUrl = await toPng(slideElement, {
       quality: 1.0,
       pixelRatio: 2, // Higher quality for retina displays
+      filter: shouldExportNode,
     });
 
     // Create download link
@@ -30,6 +54,7 @@ export async function copySlideToPng(
     const dataUrl = await toPng(slideElement, {
       quality: 1.0,
       pixelRatio: 2,
+      filter: shouldExportNode,
     });
 
     // Convert data URL to blob
