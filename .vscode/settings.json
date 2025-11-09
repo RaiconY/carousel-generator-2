@@ -30,7 +30,6 @@
     ".contentlayer",
     ".husky",
     ".next",
-    ".vercel",
     ".vscode",
     ".git", // Ignore the .git directory
     "*.dll", // Ignore all .dll files.
@@ -64,8 +63,6 @@
     "classname",
     "clsx",
     "contentlayer",
-    "fmoretti",
-    "franmoretti",
     "hookform",
     "huemint",
     "Lucide",
