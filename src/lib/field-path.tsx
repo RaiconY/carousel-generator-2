@@ -3,19 +3,20 @@ export function getStyleSibling(field: string): string {
 }
 
 export function getSlideNumber(field: string): number {
-  if (!field.startsWith("slides")) {
+  if (!field || !field.startsWith("slides")) {
     throw Error("Getting slide number of field without slides");
   }
   return Number(field.split(".").slice(1, 2));
 }
 
 export function getElementNumber(field: string): number {
-  if (!field.startsWith("slides")) {
+  if (!field || !field.startsWith("slides")) {
     throw Error("Getting slide number of field without slides");
   }
   return Number(field.split(".").slice(3, 4));
 }
 
 export function getParent(field: string): string {
+  if (!field) return "";
   return field.split(".").slice(0, -1).join(".");
 }

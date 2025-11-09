@@ -6,7 +6,6 @@
 
 Carousel Generator comes packed with a variety of features to help you create stunning carousels effortlessly:
 
-- 🪄 Generate carousels with AI
 - ✍️ Forms powered by [react-hook-form](https://react-hook-form.com/)
 - 🎨 Sleek UI components from [Shadcn/ui](https://ui.shadcn.com/)
 - ✅ Input validation using [ZOD](https://zod.dev/)
@@ -35,13 +34,7 @@ Carousel Generator comes packed with a variety of features to help you create st
 
 To get started with Carousel Generator, follow these simple installation steps:
 
-1. Create your environment file
-
-   ```bash
-   cp .env.example .env
-   ```
-
-2. Install the required dependencies using `pnpm`:
+1. Install the required dependencies using `pnpm`:
 
    ```bash
    pnpm i
@@ -53,19 +46,7 @@ To get started with Carousel Generator, follow these simple installation steps:
    npm install
    ```
 
-3. Create the environment variables file:
-
-   ```bash
-   cp .env.example .env.local
-   ```
-
-   and update the values in the `.env.local` file.
-
-   To get an OpenaI API key, use [your OpenAI API key](https://platform.openai.com/account/api-keys)
-
-   NOTE: Remember to include these environment variables on your server if you are deploying this application.
-
-4. Start the development server:
+2. Start the development server:
 
    ```bash
    pnpm dev

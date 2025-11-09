@@ -10,6 +10,7 @@ import SlideMenubar from "@/components/slide-menubar";
 
 export default function SlideMenubarWrapper({
   // slidesFieldArray,
+  fieldName,
   slidesFieldArray,
   children,
   className = "",

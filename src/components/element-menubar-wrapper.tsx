@@ -121,6 +121,7 @@ const ElementMenubarWrapper = React.forwardRef<
 >(function ElementMenubarWrapper(
   {
     // slidesFieldArray,
+    fieldName,
     children,
     className = "",
   },
@@ -138,6 +139,7 @@ const ElementMenubarWrapper = React.forwardRef<
         )}
       >
         <ElementMenubar
+          fieldName={fieldName}
           className={className}
         />
       </div>
