@@ -173,7 +173,7 @@ export function SidebarTabsPanel() {
           <div className="p-2 flex flex-col items-stretch w-full h-full">
             {currentSelection ? (
               <StyleMenu form={form} className={"m-4"} />
-            null}
+            ) : null}
             <VerticalTabsContent
               value={ALL_FORMS.design.value}
               className="mt-0 border-0 p-0 m-4 overflow-y-auto"
