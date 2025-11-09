@@ -2,12 +2,6 @@
 
 **Carousel Generator** is an open-source carousel generator tool that allows you to easily create and customize carousels for your LinkedIn.
 
-🔗 [Website](https://carouselgenerator.vercel.app)
-
-## AI Demo
-
-https://github.com/FranciscoMoretti/carousel-generator/assets/16997807/50cb033d-84d5-4214-93aa-45c6f524d0b1
-
 ## Features
 
 Carousel Generator comes packed with a variety of features to help you create stunning carousels effortlessly:
@@ -31,7 +25,7 @@ Carousel Generator comes packed with a variety of features to help you create st
 
 ## Usage
 
-1. Visit [carouselgenerator.vercel.app](https://carouselgenerator.vercel.app) to access the Carousel Generator tool.
+1. Run the application locally to access the Carousel Generator tool.
 
 2. Customize your carousel settings and add/edit slides as needed.
 
@@ -69,8 +63,6 @@ To get started with Carousel Generator, follow these simple installation steps:
 
    To get an OpenaI API key, use [your OpenAI API key](https://platform.openai.com/account/api-keys)
 
-   Rate limiting is optional. To enable it, you'll need [Vercel KV credentials](https://vercel.com/docs/storage/vercel-kv/quickstart#quickstart)
-
    NOTE: Remember to include these environment variables on your server if you are deploying this application.
 
 4. Start the development server:
@@ -93,6 +85,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-Happy carousel generating! If you have any questions or need assistance, feel free to [open an issue](https://github.com/FranciscoMoretti/carousel-generator/issues) on GitHub.
-
-🚀 Thank you for using Carousel Generator!
+Happy carousel generating! 🚀
